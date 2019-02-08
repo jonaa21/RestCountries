@@ -6,6 +6,12 @@
     <meta content="ie=edge" http-equiv="X-UA-Compatible">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link crossorigin="" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
+          integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+          rel="stylesheet"/>
+    <script crossorigin=""
+            integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
+            src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"></script>
 
     <title>Rest Countries Service</title>
 </head>
@@ -17,13 +23,13 @@
             <h1>Country Search</h1>
         </div>
         <div class="col-lg-6">
-            <div class="col-lg-9">
+            <div class="col-lg-12">
                 <select id="selectCountry" name="selectedCountry" onchange="getCountryInfo()"
                         type="button">x
                     <option disabled selected>Country Select</option>
                 </select>
             </div>
-            <div class="col-lg-6">
+            <div class="col-lg-6" style="padding: 10px">
                 <table>
                     <tr>
                         <td><b>Capital:</b></td>
@@ -43,8 +49,8 @@
                     </tr>
                 </table>
             </div>
-            <div class="col-lg-12">
-                <table class="table">
+            <div class="col-lg-12" style="padding: 10px">
+                <table class="table table-bordered" id="table">
                     <thead class="thead-dark">
                     <tr>
                         <th>Acronym</th>
@@ -58,22 +64,22 @@
             </div>
         </div>
         <div class="col-lg-6">
-            <img alt="flag" width="250px" id="flag" src="">
             <div class="col-lg-6">
+                <img alt="flag" id="flag" src="" width="80%">
+            </div>
+            <div class="col-lg-6" id="borderDiv">
                 <b for="borders">Borders</b>
                 <ul id="borders"></ul>
             </div>
         </div>
-        <div class="col-lg-12" id="maps">
-            <img alt="map" src="" id="map">
+        <div class="col-lg-6" id="mapParent" style="padding: 10px">
+            <div id="mapid" style="height: 360px"></div>
         </div>
     </div>
 </div>
 
 
 <script src="country.js">
-</script>
-<script src="modestmaps.min.js">
 </script>
 </body>
 </html>

@@ -1,5 +1,14 @@
 var countryData = [];
 
+const flag = document.getElementById('flag');
+flag.style.display = 'none';
+
+const bordersDiv = document.getElementById('borderDiv');
+bordersDiv.style.display = 'none';
+
+const table = document.getElementById('table');
+table.style.display = 'none';
+
 function makeCall(url) {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
@@ -32,46 +41,75 @@ function fillList(xhttp) {
     }
 }
 
-function populateCountryInfo(selectedCountry){
-    if (selectedCountry){
+function populateCountryInfo(selectedCountry) {
+    if (selectedCountry) {
         document.getElementById('capital').innerHTML = selectedCountry.capital;
         document.getElementById('timezone').innerHTML = selectedCountry.timezones[0];
         document.getElementById('language').innerHTML = selectedCountry.languages[0].name;
         document.getElementById('currency').innerHTML = selectedCountry.currencies[0].name;
 
-        const countryTable = document.getElementById('regionInfo');
-        countryTable.innerHTML='';
-        selectedCountry.regionalBlocs.forEach(region =>{
-            const html = `
-            <tr>
-                <td>${region.acronym}</td>
-                <td>${region.name}</td>
-            </tr>
-            `;
-            countryTable.innerHTML += html;
-        });
+        //Region
+        initRegionalBlocs(selectedCountry);
+
         //Flag
-        document.getElementById('flag').setAttribute('src', selectedCountry.flag);
+        if (selectedCountry.flag) {
+            flag.setAttribute('src', selectedCountry.flag);
+            flag.style.display = 'block';
+        }
 
-    //    Borders
-        const borders = document.getElementById('borders');
-        borders.innerHTML='';
-        selectedCountry.borders.forEach(border => {
-            const html = `
-            <li>${border}</li>
-            `;
-            borders.innerHTML += html;
-        });
-        geoLocation(selectedCountry);
-    }
+        //    Borders
+        initBorders(selectedCountry);
 
-    function geoLocation(country) {
-        const location = document.getElementById('maps');
-        let template = 'https://www.openstreetmap.org/#map=6/'+
-            country.latlng[0]+'/'+country.latlng[1]+'.png';
-        const provider = new MM.TemplatedLayer(template);
-        const map = new MM.Map(location, provider);
-        map.setZoom(10).setCenter({ lat:country.latlng[0], lon:country.latlng[1] });
-        location.innerHTML = map;
+        //Map
+        getGeolocation(selectedCountry);
     }
 }
+
+function initRegionalBlocs(country) {
+    if (country.regionalBlocs.length > 0) {
+        const countryTable = document.getElementById('regionInfo');
+        countryTable.innerHTML = '';
+        country.regionalBlocs.forEach(region => {
+            const html = `
+                <tr>
+                    <td>${region.acronym}</td>
+                    <td>${region.name}</td>
+                </tr>
+                `;
+            countryTable.innerHTML += html;
+        });
+        table.style.display = 'table';
+    }
+}
+
+function initBorders(country) {
+    if (country.borders) {
+        const borders = document.getElementById('borders');
+        borders.innerHTML = '';
+        country.borders.forEach(border => {
+            const html = `
+                <li>${border}</li>
+                `;
+            borders.innerHTML += html;
+        });
+        bordersDiv.style.display = 'inline';
+    }
+}
+
+function getGeolocation(country) {
+    let lat = country.latlng[0];
+    let long = country.latlng[1];
+    mymap.setView([lat, long], 4);
+    L.marker([lat, long]).addTo(mymap);
+}
+
+const mymap = L.map('mapid');
+L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.' +
+    'png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+    maxZoom: 18,
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+        '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+        'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    id: 'mapbox.streets'
+}).addTo(mymap);
+
